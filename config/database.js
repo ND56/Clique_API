@@ -1,6 +1,6 @@
 'use strict'
 
-const mongooseBaseName = 'droneLog'
+const mongooseBaseName = 'fileBucket_API'
 
 const environment = process.env.NODE_ENV || 'development'
 const database = {

@@ -1,6 +1,6 @@
 'use strict'
 
-const debug = require('debug')('droneLog:error-handler')
+const debug = require('debug')('fileBucket_API:error-handler')
 
 const errorHandler = (err, req, res, next) => {
   // jshint unused:false
