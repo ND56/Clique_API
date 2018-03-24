@@ -4,10 +4,6 @@ const mongoose = require('mongoose')
 
 // eventually add a comment_id field (like the owner field)
 const imageSchema = new mongoose.Schema({
-  filename: {
-    type: String,
-    required: true
-  },
   title: {
     type: String,
     required: true
@@ -18,6 +14,10 @@ const imageSchema = new mongoose.Schema({
   tags: [{
     content: String
   }],
+  url: {
+    type: String,
+    required: true
+  },
   _owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
