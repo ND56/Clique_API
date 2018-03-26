@@ -28,9 +28,13 @@ const index = (req, res, next) => {
 }
 
 const show = (req, res) => {
-  res.json({
-    image: req.image.toJSON({ user: req.user })
-  })
+  Image.findById(req.params.id)
+    .populate('_owner')
+    .then((image) => {
+      res.json({
+        image: image.toJSON({ user: req.user })
+      })
+    })
 }
 
 const create = (req, res, next) => {
@@ -97,6 +101,8 @@ module.exports = controller({
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },
   { method: interimMulterUpload.single('image[file]'), only: ['create'] },
-  { method: setModel(Image), only: ['show'] },
+  // { method: setModel(Image), only: ['show'] },
+  // ***NOTE*** I don't think this is necessary anymore because we now manually
+  // find the image to populate it
   { method: setModel(Image, { forUser: true }), only: ['update', 'destroy'] }
 ] })
