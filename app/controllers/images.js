@@ -1,5 +1,7 @@
 'use strict'
 
+const mongoose = require('mongoose')
+
 const controller = require('lib/wiring/controller')
 const models = require('app/models')
 const Image = models.image
@@ -14,6 +16,9 @@ const interimMulterUpload = multer({ dest: '/tmp/' })
 
 const index = (req, res, next) => {
   Image.find()
+    // can use .populate() on an array as well!
+    .populate('_owner')
+    //
     .then(images => res.json({
       images: images.map((e) =>
         e.toJSON({ user: req.user }))
@@ -30,11 +35,6 @@ const show = (req, res) => {
 const create = (req, res, next) => {
   // create file object from our multer-req object, which we will then pass
   // to s3Upload and the create function
-  console.log('req is ', req)
-  console.log('req.data is ', req.data)
-  console.log('req.body is ', req.body)
-  console.log('req.file is ', req.file)
-  console.log('req.user._id is ', req.user._id)
   const file = {
     path: req.file.path,
     title: req.body.image.title,
@@ -53,7 +53,7 @@ const create = (req, res, next) => {
       title: file.title,
       description: file.description,
       tags: file.tags,
-      _owner: file.owner
+      _owner: req.user._id
     }))
     .then(image =>
       res.status(201)
