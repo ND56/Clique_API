@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const controller = require('lib/wiring/controller')
 const models = require('app/models')
 const Image = models.image
+const User = models.user
 
 const authenticate = require('./concerns/authenticate')
 const setUser = require('./concerns/set-current-user')
@@ -55,9 +56,20 @@ const create = (req, res, next) => {
       tags: file.tags,
       _owner: req.user._id
     }))
-    .then(image =>
+    .then(image => {
       res.status(201)
-        .json({ image: image.toJSON({ user: req.user }) }))
+        .json({ image: image.toJSON({ user: req.user }) })
+      return image
+    })
+    // then push the image to the user's images array
+    .then(function (image) {
+      User.findById(req.user._id)
+        .then(function (user) {
+          console.log('**USER IS***', user)
+          user.images.push(mongoose.Types.ObjectId(image._id))
+          console.log('**PUSHED USER IS***', user)
+        })
+    })
     .catch(next)
 }
 

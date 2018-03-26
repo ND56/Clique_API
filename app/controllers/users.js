@@ -35,6 +35,7 @@ const index = (req, res, next) => {
 const show = (req, res, next) => {
   User.findById(req.params.id)
     .populate('images')
+    // ^^ this doesn't currently work
     .then(user => user ? res.json({ user }) : next())
     .catch(next)
 }
