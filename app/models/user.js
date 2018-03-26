@@ -3,6 +3,10 @@
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
+// although linter says we're not using this, I have in my notes
+// from the mongoose populate lesson that this is necessary to
+// complete the one-to-many relationship; see line 24
+const Image = require('./image.js')
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -14,7 +18,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  passwordDigest: String
+  passwordDigest: String,
+  images: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Image' // name of model we're referencing
+    // brackets tell mongoose we're expecting an array
+  }]
 }, {
   timestamps: true,
   toJSON: {

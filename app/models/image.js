@@ -1,6 +1,10 @@
 'use strict'
 
 const mongoose = require('mongoose')
+// although linter says we're not using this, I have in my notes
+// from the mongoose populate lesson that this is necessary to
+// complete the one-to-many relationship; see line 27
+const User = require('./user.js')
 
 // eventually add a comment_id field (like the owner field)
 const imageSchema = new mongoose.Schema({
