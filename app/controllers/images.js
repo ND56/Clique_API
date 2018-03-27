@@ -78,11 +78,48 @@ const create = (req, res, next) => {
 }
 
 const update = (req, res, next) => {
-  delete req.body.image._owner  // disallow owner reassignment.
-
-  req.image.update(req.body.image)
+  // need to make sure owner is user
+  // console.log('*****req.body is*****', req.body.image.title)
+  // console.log('*****req.body is*****', req.body.image.description)
+  // console.log('*****req.body is*****', req.body.image.tags)
+  // console.log('*****req.body is*****', req.body.image.tags.split(' '))
+  // console.log('*****req.user is*****', req.user._id)
+  Image.findById(req.params.id)
+    .populate('_owner')
+    .then(function (image) {
+      return image
+    })
+    .then(function (image) {
+      const imageOwner = image._owner._id.toString()
+      const currentUser = req.user._id.toString()
+      if (imageOwner === currentUser) {
+        // delete req.body.image._owner (use .update instead?)
+        image.title = req.body.image.title
+        image.description = req.body.image.description
+        console.log('LINE 99', image.tags)
+        image.tags = []
+        console.log('LINE 101', image.tags)
+        const newTagsArr = req.body.image.tags.split(' ')
+        console.log('LINE 103', newTagsArr)
+        newTagsArr.forEach(function (element) {
+          image.tags.push(element)
+        })
+        console.log('LINE 107', image.tags)
+        console.log('LINE 108', image)
+        return image.save()
+      } else {
+        res.status(400).send('User lacks ownership; unable to edit image.')
+      }
+    })
+    .then(function (image) {
+      return image
+    })
     .then(() => res.sendStatus(204))
     .catch(next)
+  // keep
+  // req.image.update(req.body.image)
+  //   .then(() => res.sendStatus(204))
+  //   .catch(next)
 }
 
 const destroy = (req, res, next) => {
@@ -104,5 +141,6 @@ module.exports = controller({
   // { method: setModel(Image), only: ['show'] },
   // ***NOTE*** I don't think this is necessary anymore because we now manually
   // find the image to populate it
-  { method: setModel(Image, { forUser: true }), only: ['update', 'destroy'] }
+  // { method: setModel(Image, { forUser: true }), only: ['update', 'destroy'] }
+  { method: setModel(Image, { forUser: true }), only: ['destroy'] }
 ] })
