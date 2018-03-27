@@ -10,7 +10,7 @@ curl "${API}${URL_PATH}/${ID}" \
   --header "Authorization: Token token=${TOKEN}" \
   --data '{
     "image": {
-      "title": "'"${TITLE}"'"
+      "tags": "'"${TAGS}"'"
     }
   }'
 

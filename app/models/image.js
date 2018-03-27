@@ -15,9 +15,7 @@ const imageSchema = new mongoose.Schema({
   description: {
     type: String
   },
-  tags: [{
-    content: String
-  }],
+  tags: [String],
   url: {
     type: String,
     required: true
