@@ -110,13 +110,42 @@ const changepw = (req, res, next) => {
   ).catch(makeErrorHandler(res, next))
 }
 
+const updateLocation = (req, res, next) => {
+  console.log('line 114****', req.params.id)
+  console.log('line 115****', req.user.token)
+  User.findOne({
+    _id: req.params.id,
+    token: req.user.token
+  })
+    .then(user => {
+      user.latitude = req.body.user.latitude
+      user.longitude = req.body.user.longitude
+      return user.save()
+    })
+    .then(function (user) {
+      console.log('line 126***', user)
+      return user
+    })
+    .then((user) => {
+      res.json({ user })
+      return user
+    })
+    .then(function (user) {
+      console.log('***LINE 134', user)
+      console.log('***LINE 135', user.toJSON())
+      return user
+    })
+    .catch(next)
+}
+
 module.exports = controller({
   index,
   show,
   signup,
   signin,
   signout,
-  changepw
+  changepw,
+  updateLocation
 }, { before: [
   { method: authenticate, except: ['signup', 'signin'] }
 ] })
