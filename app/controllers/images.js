@@ -115,7 +115,9 @@ const update = (req, res, next) => {
 const addComment = (req, res, next) => {
   console.log('LINE 116', req.body.image.comments)
   console.log('LINE 117', req.user.email)
-  const newComment = [req.body.image.comments, req.user.email]
+  const newId = mongoose.Types.ObjectId()
+  console.log('LINE 119', newId)
+  const newComment = [req.body.image.comments, req.user.email, newId]
   console.log('LINE 119', newComment)
   Image.findById(req.params.id)
     .populate('_owner')
