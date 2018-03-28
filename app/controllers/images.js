@@ -130,6 +130,47 @@ const addComment = (req, res, next) => {
     .catch(next)
 }
 
+const editComment = (req, res, next) => {
+  console.log('LINE 134**', req.body.image.commentId)
+  console.log('LINE 135**', req.body.image.updatedComment)
+  Image.findById(req.params.id)
+    .populate('_owner')
+    .then(function (image) {
+      console.log('LINE 139**', image.comments)
+      return image
+    })
+    .then(function (image) {
+      for (let i = 0; i < image.comments.length; i++) {
+        const currentCommentId = image.comments[i][2].toString()
+        const commentIdPassedFromClient = req.body.image.commentId.toString()
+        if (currentCommentId === commentIdPassedFromClient) {
+          // && (image.comments[i][1] === req.user.email)
+          // image.update(image.comments[i][0] = req.body.image.updatedComment)
+          // delete it
+          // remove the old comment
+          console.log('LINE 151***', image.comments)
+          const removeIndex = image.comments.indexOf(image.comments[i])
+          image.comments.splice(removeIndex, 1)
+          console.log('LINE 154***', image.comments)
+          // build new comment
+          const newId = mongoose.Types.ObjectId()
+          const newComment = [req.body.image.updatedComment, req.user.email, newId]
+          // push new comment
+          image.comments.push(newComment)
+          console.log('LINE 160***', image.comments)
+          return image.save()
+        }
+      }
+    })
+    // need to add notice if there was no successful edit?
+    .then(function (image) {
+      console.log('LINE 167***', image.comments)
+      return image
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+}
+
 const destroy = (req, res, next) => {
   req.image.remove()
     .then(() => res.sendStatus(204))
@@ -142,7 +183,8 @@ module.exports = controller({
   create,
   update,
   destroy,
-  addComment
+  addComment,
+  editComment
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },

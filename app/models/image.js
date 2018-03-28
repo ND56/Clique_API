@@ -16,7 +16,7 @@ const imageSchema = new mongoose.Schema({
     type: String
   },
   tags: [String],
-  comments: [[]], // an array of arrays that contain strings: [[comment, user email], [comment, user email]]
+  comments: [[]], // an array of arrays: [[comment, user email, uniqueID], [comment, user email, uniqueID]]
   url: {
     type: String,
     required: true
