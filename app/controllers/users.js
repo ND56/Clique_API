@@ -123,7 +123,8 @@ const updateLocation = (req, res, next) => {
       return user.save()
     })
     .then(function (user) {
-      console.log('line 126***', user)
+      console.log('line 126***', user.token)
+      console.log('line 127***', user._id)
       return user
     })
     .then((user) => {
