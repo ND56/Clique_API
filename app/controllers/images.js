@@ -58,6 +58,11 @@ const create = (req, res, next) => {
       title: file.title,
       description: file.description,
       tags: file.tags,
+      latitude: req.body.image.latitude,
+      longitude: req.body.image.longitude,
+      city: req.body.image.city,
+      state: req.body.image.state,
+      country: req.body.image.country,
       _owner: req.user._id
     }))
     .then(image => {

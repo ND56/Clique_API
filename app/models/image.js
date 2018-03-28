@@ -20,6 +20,11 @@ const imageSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  latitude: Number,
+  longitude: Number,
+  city: String,
+  state: String,
+  country: String,
   _owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
