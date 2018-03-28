@@ -83,12 +83,6 @@ const create = (req, res, next) => {
 }
 
 const update = (req, res, next) => {
-  // need to make sure owner is user
-  // console.log('*****req.body is*****', req.body.image.title)
-  // console.log('*****req.body is*****', req.body.image.description)
-  // console.log('*****req.body is*****', req.body.image.tags)
-  // console.log('*****req.body is*****', req.body.image.tags.split(' '))
-  // console.log('*****req.user is*****', req.user._id)
   Image.findById(req.params.id)
     .populate('_owner')
     .then(function (image) {
@@ -101,16 +95,11 @@ const update = (req, res, next) => {
         // delete req.body.image._owner (use .update instead?)
         image.title = req.body.image.title
         image.description = req.body.image.description
-        console.log('LINE 99', image.tags)
         image.tags = []
-        console.log('LINE 101', image.tags)
         const newTagsArr = req.body.image.tags.split(' ')
-        console.log('LINE 103', newTagsArr)
         newTagsArr.forEach(function (element) {
           image.tags.push(element)
         })
-        console.log('LINE 107', image.tags)
-        console.log('LINE 108', image)
         return image.save()
       } else {
         res.status(400).send('User lacks ownership; unable to edit image.')
@@ -121,10 +110,22 @@ const update = (req, res, next) => {
     })
     .then(() => res.sendStatus(204))
     .catch(next)
-  // keep
-  // req.image.update(req.body.image)
-  //   .then(() => res.sendStatus(204))
-  //   .catch(next)
+}
+
+const addComment = (req, res, next) => {
+  console.log('LINE 116', req.body.image.comments)
+  console.log('LINE 117', req.user.email)
+  const newComment = [req.body.image.comments, req.user.email]
+  console.log('LINE 119', newComment)
+  Image.findById(req.params.id)
+    .populate('_owner')
+    .then(function (image) {
+      image.comments.push(newComment)
+      console.log('LINE 124', image)
+      return image.save()
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
 }
 
 const destroy = (req, res, next) => {
@@ -138,7 +139,8 @@ module.exports = controller({
   show,
   create,
   update,
-  destroy
+  destroy,
+  addComment
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },
