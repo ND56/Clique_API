@@ -18,6 +18,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  latitude: Number,
+  longitude: Number,
   passwordDigest: String,
   images: [{
     type: mongoose.Schema.Types.ObjectId,
