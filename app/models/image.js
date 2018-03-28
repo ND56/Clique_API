@@ -16,6 +16,7 @@ const imageSchema = new mongoose.Schema({
     type: String
   },
   tags: [String],
+  comments: [[]], // an array of arrays: [[comment, user email, uniqueID], [comment, user email, uniqueID]]
   url: {
     type: String,
     required: true
@@ -31,6 +32,10 @@ const imageSchema = new mongoose.Schema({
     required: true
   }
 }, {
+  usePushEach: true,
+  // I was getting a wierd error when trying to push to the comments array:
+  // {"error":{"message":"Unknown modifier: $pushAll"
+  // per google, adding line 35 above is the solution for this!
   timestamps: true,
   toJSON: {
     transform: function (doc, ret, options) {

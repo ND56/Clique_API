@@ -83,12 +83,6 @@ const create = (req, res, next) => {
 }
 
 const update = (req, res, next) => {
-  // need to make sure owner is user
-  // console.log('*****req.body is*****', req.body.image.title)
-  // console.log('*****req.body is*****', req.body.image.description)
-  // console.log('*****req.body is*****', req.body.image.tags)
-  // console.log('*****req.body is*****', req.body.image.tags.split(' '))
-  // console.log('*****req.user is*****', req.user._id)
   Image.findById(req.params.id)
     .populate('_owner')
     .then(function (image) {
@@ -101,16 +95,11 @@ const update = (req, res, next) => {
         // delete req.body.image._owner (use .update instead?)
         image.title = req.body.image.title
         image.description = req.body.image.description
-        console.log('LINE 99', image.tags)
         image.tags = []
-        console.log('LINE 101', image.tags)
         const newTagsArr = req.body.image.tags.split(' ')
-        console.log('LINE 103', newTagsArr)
         newTagsArr.forEach(function (element) {
           image.tags.push(element)
         })
-        console.log('LINE 107', image.tags)
-        console.log('LINE 108', image)
         return image.save()
       } else {
         res.status(400).send('User lacks ownership; unable to edit image.')
@@ -121,10 +110,65 @@ const update = (req, res, next) => {
     })
     .then(() => res.sendStatus(204))
     .catch(next)
-  // keep
-  // req.image.update(req.body.image)
-  //   .then(() => res.sendStatus(204))
-  //   .catch(next)
+}
+
+const addComment = (req, res, next) => {
+  console.log('LINE 116', req.body.image.comments)
+  console.log('LINE 117', req.user.email)
+  const newId = mongoose.Types.ObjectId()
+  console.log('LINE 119', newId)
+  const newComment = [req.body.image.comments, req.user.email, newId]
+  console.log('LINE 119', newComment)
+  Image.findById(req.params.id)
+    .populate('_owner')
+    .then(function (image) {
+      image.comments.push(newComment)
+      console.log('LINE 124', image)
+      return image.save()
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+}
+
+const editComment = (req, res, next) => {
+  console.log('LINE 134**', req.body.image.commentId)
+  console.log('LINE 135**', req.body.image.updatedComment)
+  Image.findById(req.params.id)
+    .populate('_owner')
+    .then(function (image) {
+      console.log('LINE 139**', image.comments)
+      return image
+    })
+    .then(function (image) {
+      for (let i = 0; i < image.comments.length; i++) {
+        const currentCommentId = image.comments[i][2].toString()
+        const commentIdPassedFromClient = req.body.image.commentId.toString()
+        if (currentCommentId === commentIdPassedFromClient) {
+          // && (image.comments[i][1] === req.user.email)
+          // image.update(image.comments[i][0] = req.body.image.updatedComment)
+          // delete it
+          // remove the old comment
+          console.log('LINE 151***', image.comments)
+          const removeIndex = image.comments.indexOf(image.comments[i])
+          image.comments.splice(removeIndex, 1)
+          console.log('LINE 154***', image.comments)
+          // build new comment
+          const newId = mongoose.Types.ObjectId()
+          const newComment = [req.body.image.updatedComment, req.user.email, newId]
+          // push new comment
+          image.comments.push(newComment)
+          console.log('LINE 160***', image.comments)
+          return image.save()
+        }
+      }
+    })
+    // need to add notice if there was no successful edit?
+    .then(function (image) {
+      console.log('LINE 167***', image.comments)
+      return image
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
 }
 
 const destroy = (req, res, next) => {
@@ -138,7 +182,9 @@ module.exports = controller({
   show,
   create,
   update,
-  destroy
+  destroy,
+  addComment,
+  editComment
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },
