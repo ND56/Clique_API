@@ -20,5 +20,4 @@ module.exports = require('lib/wiring/routes')
 .patch('/user-location/:id', 'users#updateLocation')
 .patch('/add-comment/:id', 'images#addComment')
 .patch('/edit-comment/:id', 'images#editComment')
-
 // all routes created
