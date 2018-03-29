@@ -126,7 +126,12 @@ const addComment = (req, res, next) => {
       console.log('LINE 124', image)
       return image.save()
     })
-    .then(() => res.sendStatus(204))
+    .then(image => {
+      res.status(201)
+        .json({ image: image.toJSON({ user: req.user }) })
+      return image
+    })
+    // .then(() => res.sendStatus(204))
     .catch(next)
 }
 
