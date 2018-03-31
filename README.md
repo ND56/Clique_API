@@ -26,10 +26,10 @@ Clique is a geolocation-based file sharing client designed to help you explore y
 | GET    | `/images/:id`          | `images#show`           |
 | POST   | `/images`              | `images#create`         |
 | PATCH  | `/images/:id`          | `images#update`         |
-| GET    | `/images/:id`          | `images#destroy`        |
-| POST   | `/images`              | `images#addComment`     |
+| DELETE | `/images/:id`          | `images#destroy`        |
+| PATCH  | `/images`              | `images#addComment`     |
 | PATCH  | `/images/:id`          | `images#editComment`    |
-| GET    | `/user-location/:id`   | `users#updateLocation`  |
+| PATCH  | `/user-location/:id`   | `users#updateLocation`  |
 |--------|------------------------|-------------------------|
 
 ## API Specific Planned Feature Enhancements
