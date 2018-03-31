@@ -111,8 +111,6 @@ const changepw = (req, res, next) => {
 }
 
 const updateLocation = (req, res, next) => {
-  console.log('line 114****', req.params.id)
-  console.log('line 115****', req.user.token)
   User.findOne({
     _id: req.params.id,
     token: req.user.token
@@ -123,8 +121,6 @@ const updateLocation = (req, res, next) => {
       return user.save()
     })
     .then(function (user) {
-      console.log('line 126***', user.token)
-      console.log('line 127***', user._id)
       return user
     })
     .then((user) => {
@@ -132,8 +128,6 @@ const updateLocation = (req, res, next) => {
       return user
     })
     .then(function (user) {
-      console.log('***LINE 134', user)
-      console.log('***LINE 135', user.toJSON())
       return user
     })
     .catch(next)
