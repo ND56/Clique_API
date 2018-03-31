@@ -74,9 +74,7 @@ const create = (req, res, next) => {
     .then(function (image) {
       User.findById(req.user._id)
         .then(function (user) {
-          console.log('**USER IS***', user)
           user.images.push(mongoose.Types.ObjectId(image._id))
-          console.log('**PUSHED USER IS***', user)
         })
     })
     .catch(next)
@@ -113,17 +111,12 @@ const update = (req, res, next) => {
 }
 
 const addComment = (req, res, next) => {
-  console.log('LINE 116', req.body.image.comments)
-  console.log('LINE 117', req.user.email)
   const newId = mongoose.Types.ObjectId()
-  // console.log('LINE 119', newId)
   const newComment = [req.body.image.comments, req.user.email, newId]
-  // console.log('LINE 119', newComment)
   Image.findById(req.params.id)
     .populate('_owner')
     .then(function (image) {
       image.comments.push(newComment)
-      // console.log('LINE 124', image)
       return image.save()
     })
     .then(image => {
@@ -131,17 +124,13 @@ const addComment = (req, res, next) => {
         .json({ image: image.toJSON({ user: req.user }) })
       return image
     })
-    // .then(() => res.sendStatus(204))
     .catch(next)
 }
 
 const editComment = (req, res, next) => {
-  // console.log('LINE 134**', req.body.image.commentId)
-  // console.log('LINE 135**', req.body.image.updatedComment)
   Image.findById(req.params.id)
     .populate('_owner')
     .then(function (image) {
-      // console.log('LINE 139**', image.comments)
       return image
     })
     .then(function (image) {
@@ -149,27 +138,19 @@ const editComment = (req, res, next) => {
         const currentCommentId = image.comments[i][2].toString()
         const commentIdPassedFromClient = req.body.image.commentId.toString()
         if (currentCommentId === commentIdPassedFromClient) {
-          // && (image.comments[i][1] === req.user.email)
-          // image.update(image.comments[i][0] = req.body.image.updatedComment)
-          // delete it
-          // remove the old comment
-          // console.log('LINE 151***', image.comments)
           const removeIndex = image.comments.indexOf(image.comments[i])
           image.comments.splice(removeIndex, 1)
-          // console.log('LINE 154***', image.comments)
           // build new comment
           const newId = mongoose.Types.ObjectId()
           const newComment = [req.body.image.updatedComment, req.user.email, newId]
           // push new comment
           image.comments.push(newComment)
-          // console.log('LINE 160***', image.comments)
           return image.save()
         }
       }
     })
     // need to add notice if there was no successful edit?
     .then(function (image) {
-      // console.log('LINE 167***', image.comments)
       return image
     })
     .then(() => res.sendStatus(204))
@@ -190,7 +171,6 @@ module.exports = controller({
   destroy,
   addComment,
   editComment
-  // findbydistance
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },
