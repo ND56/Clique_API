@@ -34,7 +34,7 @@ Clique is a geolocation-based file sharing client designed to help you explore y
 
 ## API Specific Planned Feature Enhancements
 
-1. [Feature Description] - Update schema to allow for the creation of a search feature using tags or other metadata
+1. [`Feature Description`] - Update schema to allow for the creation of a search feature using tags or other metadata
 
 ## Entity Relationship Diagram, User Stories, & Wireframes
 The ERD and wireframes for this project can be found at https://imgur.com/a/mzRop
