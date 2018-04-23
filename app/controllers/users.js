@@ -1,6 +1,6 @@
 'use strict'
 
-const debug = require('debug')('fileBucket_API:users')
+const debug = require('debug')('Clique_API:users')
 
 const controller = require('lib/wiring/controller')
 const models = require('app/models')
